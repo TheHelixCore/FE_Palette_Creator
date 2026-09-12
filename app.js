@@ -21,6 +21,9 @@
   const downloadBtn = document.getElementById("download-btn");
   const hexOutput = document.getElementById("hex-output");
   const copyBtn = document.getElementById("copy-btn");
+  const importInput = document.getElementById("import-input");
+  const importBtn = document.getElementById("import-btn");
+  const importStatus = document.getElementById("import-status");
 
   let manifest = [];
   let current = null; // the loaded still, plus a live-editable "palette" array
@@ -254,6 +257,55 @@
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+  });
+
+  function parsePalette(text) {
+    text = text.trim();
+    if (!text) throw new Error("Paste something first.");
+
+    if (text.startsWith("{")) {
+      const data = JSON.parse(text); // let a real JSON syntax error surface as-is
+      const colors = data.edited_palette || data.palette;
+      if (!Array.isArray(colors)) {
+        throw new Error("JSON has no edited_palette/palette array.");
+      }
+      if (colors.length !== 16) {
+        throw new Error(`Expected 16 colors, found ${colors.length}.`);
+      }
+      return colors.map((c) => [Number(c[0]), Number(c[1]), Number(c[2])]);
+    }
+
+    const parts = text.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts.length !== 16) {
+      throw new Error(`Expected 16 comma-separated hex colors, found ${parts.length}.`);
+    }
+    return parts.map((hex) => {
+      if (!/^#[0-9a-fA-F]{6}$/.test(hex)) {
+        throw new Error(`"${hex}" isn't a #rrggbb color.`);
+      }
+      return hexToRgb(hex);
+    });
+  }
+
+  function showImportStatus(message, ok) {
+    importStatus.textContent = message;
+    importStatus.hidden = false;
+    importStatus.className = ok ? "success" : "error";
+  }
+
+  importBtn.addEventListener("click", () => {
+    if (!current) return;
+    try {
+      const colors = parsePalette(importInput.value);
+      current.palette = colors.map(quantizeColor);
+      renderSwatches();
+      updateActiveColorEditor();
+      drawPreview();
+      updateHexOutput();
+      showImportStatus(`Imported 16 colors onto ${current.name}.`, true);
+    } catch (e) {
+      showImportStatus(e.message, false);
+    }
   });
 
   loadManifest();

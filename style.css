@@ -239,7 +239,19 @@ button:hover {
   font-weight: 600;
 }
 
-.export-box label {
+.io-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.export-box,
+.import-box {
+  flex: 1 1 260px;
+}
+
+.export-box label,
+.import-box label {
   display: block;
   font-size: 0.8rem;
   color: var(--text-dim);
@@ -251,8 +263,10 @@ button:hover {
   gap: 0.5rem;
 }
 
-#hex-output {
+#hex-output,
+#import-input {
   flex: 1;
+  min-width: 0;
   padding: 0.5rem 0.6rem;
   border-radius: 6px;
   border: 1px solid var(--border);
@@ -260,6 +274,19 @@ button:hover {
   color: var(--text);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.8rem;
+}
+
+#import-status {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+}
+
+#import-status.success {
+  color: #5fd888;
+}
+
+#import-status.error {
+  color: #ff8a8a;
 }
 
 footer {

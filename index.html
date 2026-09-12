@@ -45,11 +45,22 @@
         <button id="download-btn" type="button">Download Palette</button>
       </div>
 
-      <div class="export-box">
-        <label for="hex-output">Hex codes (paste into the sheet)</label>
-        <div class="hex-row">
-          <input id="hex-output" type="text" readonly>
-          <button id="copy-btn" type="button">Copy</button>
+      <div class="io-row">
+        <div class="export-box">
+          <label for="hex-output">Export: hex codes (paste into the sheet)</label>
+          <div class="hex-row">
+            <input id="hex-output" type="text" readonly>
+            <button id="copy-btn" type="button">Copy</button>
+          </div>
+        </div>
+
+        <div class="import-box">
+          <label for="import-input">Import: paste hex codes or a downloaded palette file's contents</label>
+          <div class="hex-row">
+            <input id="import-input" type="text" placeholder="#a8d0a0, #f8f8f8, ... or a full {...} palette JSON" spellcheck="false">
+            <button id="import-btn" type="button">Import</button>
+          </div>
+          <p id="import-status" hidden></p>
         </div>
       </div>
     </div>
