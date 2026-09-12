@@ -29,6 +29,15 @@
         <canvas id="preview" width="1" height="1"></canvas>
       </div>
 
+      <div id="active-color-editor">
+        <span class="active-color-label">Editing slot <strong id="active-slot-num">0</strong></span>
+        <input id="active-color-hex" type="text" maxlength="7" spellcheck="false">
+        <label>R <input id="active-r" type="range" min="0" max="255" step="8"></label>
+        <label>G <input id="active-g" type="range" min="0" max="255" step="8"></label>
+        <label>B <input id="active-b" type="range" min="0" max="255" step="8"></label>
+        <div id="active-color-swatch"></div>
+      </div>
+
       <div id="swatches" aria-label="Palette colors"></div>
 
       <div class="actions">

@@ -470,11 +470,6 @@
     "file": "stills/140.json"
   },
   {
-    "id": 141,
-    "name": "Huntsman",
-    "file": "stills/141.json"
-  },
-  {
     "id": 142,
     "name": "Huntsman (F)",
     "file": "stills/142.json"
@@ -540,8 +535,8 @@
     "file": "stills/154.json"
   },
   {
-    "id": 155,
-    "name": "Warrior (F)",
-    "file": "stills/155.json"
+    "id": 156,
+    "name": "Specter",
+    "file": "stills/156.json"
   }
 ]

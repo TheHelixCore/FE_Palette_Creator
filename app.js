@@ -11,6 +11,12 @@
   const canvas = document.getElementById("preview");
   const ctx = canvas.getContext("2d");
   const swatchesEl = document.getElementById("swatches");
+  const activeSlotNum = document.getElementById("active-slot-num");
+  const activeColorHex = document.getElementById("active-color-hex");
+  const activeR = document.getElementById("active-r");
+  const activeG = document.getElementById("active-g");
+  const activeB = document.getElementById("active-b");
+  const activeColorSwatch = document.getElementById("active-color-swatch");
   const resetBtn = document.getElementById("reset-btn");
   const downloadBtn = document.getElementById("download-btn");
   const hexOutput = document.getElementById("hex-output");
@@ -93,6 +99,7 @@
 
     setupCanvas();
     renderSwatches();
+    updateActiveColorEditor();
     drawPreview();
     updateHexOutput();
   }
@@ -135,7 +142,11 @@
       input.value = rgbToHex(color);
       input.dataset.slot = i;
       if (i === activeSlot) input.classList.add("active");
-      input.addEventListener("input", () => onSwatchChange(i, input));
+      // The native color-picker popup is positioned by the browser/OS and
+      // can land on top of the sprite preview -- so this input updates
+      // the palette live same as before, but the always-visible slider/
+      // hex editor above is the primary way to see changes while editing.
+      input.addEventListener("input", () => applyColorToSlot(i, hexToRgb(input.value)));
       input.addEventListener("focus", () => setActiveSlot(i));
 
       const label = document.createElement("span");
@@ -147,19 +158,47 @@
     });
   }
 
-  function onSwatchChange(slot, input) {
-    const quantized = quantizeColor(hexToRgb(input.value));
+  function applyColorToSlot(slot, rgb888) {
+    const quantized = quantizeColor(rgb888);
     current.palette[slot] = quantized;
-    input.value = rgbToHex(quantized); // snap the picker itself to what will actually ship
+    const swatchInput = swatchesEl.querySelector(`input[data-slot="${slot}"]`);
+    if (swatchInput) swatchInput.value = rgbToHex(quantized);
+    if (slot === activeSlot) updateActiveColorEditor();
     drawPreview();
     updateHexOutput();
   }
+
+  function updateActiveColorEditor() {
+    const [r, g, b] = current.palette[activeSlot];
+    activeSlotNum.textContent = activeSlot;
+    activeColorHex.value = rgbToHex([r, g, b]);
+    activeR.value = r;
+    activeG.value = g;
+    activeB.value = b;
+    activeColorSwatch.style.background = rgbToHex([r, g, b]);
+  }
+
+  function onActiveSlidersChange() {
+    applyColorToSlot(activeSlot, [Number(activeR.value), Number(activeG.value), Number(activeB.value)]);
+  }
+
+  [activeR, activeG, activeB].forEach((el) => el.addEventListener("input", onActiveSlidersChange));
+
+  activeColorHex.addEventListener("change", () => {
+    const hex = activeColorHex.value.trim();
+    if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+      applyColorToSlot(activeSlot, hexToRgb(hex));
+    } else {
+      updateActiveColorEditor(); // invalid input, revert display
+    }
+  });
 
   function setActiveSlot(slot) {
     activeSlot = slot;
     document.querySelectorAll(".swatch input").forEach((el) => {
       el.classList.toggle("active", Number(el.dataset.slot) === slot);
     });
+    updateActiveColorEditor();
   }
 
   canvas.addEventListener("click", (evt) => {
@@ -169,15 +208,14 @@
     const y = Math.floor(((evt.clientY - rect.top) / rect.height) * current.height);
     if (x < 0 || y < 0 || x >= current.width || y >= current.height) return;
     const idx = current.indices[y * current.width + x];
-    setActiveSlot(idx);
-    const input = swatchesEl.querySelector(`input[data-slot="${idx}"]`);
-    if (input) input.focus();
+    setActiveSlot(idx); // eyedrop only selects the slot -- no native popup forced open
   });
 
   resetBtn.addEventListener("click", () => {
     if (!current) return;
     current.palette = current.originalPalette.map((c) => quantizeColor(c));
     renderSwatches();
+    updateActiveColorEditor();
     drawPreview();
     updateHexOutput();
   });
