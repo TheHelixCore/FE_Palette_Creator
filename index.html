@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fe8 Class Palette Editor</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Class Palette Editor</h1>
+  <p class="subtitle">Pick a class, recolor its battle sprite, download the palette and send it back.</p>
+</header>
+
+<main>
+  <section id="class-panel">
+    <input id="search" type="search" placeholder="Search classes..." autocomplete="off">
+    <ul id="class-list" aria-label="Class list"></ul>
+  </section>
+
+  <section id="editor-panel">
+    <div id="empty-state">
+      <p>Select a class on the left to start editing its palette.</p>
+    </div>
+
+    <div id="editor" hidden>
+      <h2 id="editor-title"></h2>
+      <div class="preview-wrap">
+        <canvas id="preview" width="1" height="1"></canvas>
+      </div>
+
+      <div id="swatches" aria-label="Palette colors"></div>
+
+      <div class="actions">
+        <button id="reset-btn" type="button">Reset to original</button>
+        <button id="download-btn" type="button">Download Palette</button>
+      </div>
+
+      <div class="export-box">
+        <label for="hex-output">Hex codes (paste into the sheet)</label>
+        <div class="hex-row">
+          <input id="hex-output" type="text" readonly>
+          <button id="copy-btn" type="button">Copy</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Click a color swatch to edit it, or click directly on the sprite to pick which color to edit (eyedropper). Colors snap to the GBA's real 5-bit-per-channel palette, so the preview matches exactly what will ship in-game.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
