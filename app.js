@@ -24,8 +24,10 @@
   const importInput = document.getElementById("import-input");
   const importBtn = document.getElementById("import-btn");
   const importStatus = document.getElementById("import-status");
+  const basePaletteSelect = document.getElementById("base-palette-select");
 
   let manifest = [];
+  let basePalettes = [];
   let current = null; // the loaded still, plus a live-editable "palette" array
   let activeSlot = 0;
 
@@ -55,6 +57,28 @@
     manifest = await res.json();
     renderClassList(manifest);
   }
+
+  async function loadBasePalettes() {
+    const res = await fetch("base_palettes.json");
+    basePalettes = await res.json();
+    for (const p of basePalettes) {
+      const opt = document.createElement("option");
+      opt.value = p.index;
+      opt.textContent = `${p.index} — ${p.abbr}`;
+      basePaletteSelect.appendChild(opt);
+    }
+  }
+
+  basePaletteSelect.addEventListener("change", () => {
+    if (!current || basePaletteSelect.value === "") return;
+    const preset = basePalettes[Number(basePaletteSelect.value)];
+    current.palette = preset.colors.map(quantizeColor);
+    renderSwatches();
+    updateActiveColorEditor();
+    drawPreview();
+    updateHexOutput();
+    basePaletteSelect.value = ""; // reset to "Choose..." -- this is a one-shot apply, not a persistent mode
+  });
 
   function renderClassList(items) {
     classListEl.innerHTML = "";
@@ -309,4 +333,5 @@
   });
 
   loadManifest();
+  loadBasePalettes();
 })();

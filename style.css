@@ -212,6 +212,29 @@ main {
   color: var(--text-dim);
 }
 
+.base-palette-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.base-palette-row label {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+#base-palette-select {
+  flex: 0 1 auto;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--panel-alt);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
 .actions {
   display: flex;
   gap: 0.6rem;
