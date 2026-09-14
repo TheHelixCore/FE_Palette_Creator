@@ -53,13 +53,13 @@
   }
 
   async function loadManifest() {
-    const res = await fetch("manifest.json");
+    const res = await fetch("manifest.json", { cache: "no-store" });
     manifest = await res.json();
-    renderClassList(manifest);
+    applyFilters();
   }
 
   async function loadBasePalettes() {
-    const res = await fetch("base_palettes.json");
+    const res = await fetch("base_palettes.json", { cache: "no-store" });
     basePalettes = await res.json();
     for (const p of basePalettes) {
       const opt = document.createElement("option");
@@ -116,6 +116,8 @@
     applyBasePalette(idx + 1);
   });
 
+  let activeCategory = null; // null = all categories
+
   function renderClassList(items) {
     classListEl.innerHTML = "";
     for (const item of items) {
@@ -129,14 +131,27 @@
     }
   }
 
-  searchInput.addEventListener("input", () => {
+  function applyFilters() {
     const q = searchInput.value.trim().toLowerCase();
-    const filtered = q ? manifest.filter((m) => m.name.toLowerCase().includes(q)) : manifest;
+    let filtered = manifest;
+    if (activeCategory) filtered = filtered.filter((m) => m.category === activeCategory);
+    if (q) filtered = filtered.filter((m) => m.name.toLowerCase().includes(q));
     renderClassList(filtered);
+  }
+
+  searchInput.addEventListener("input", applyFilters);
+
+  document.querySelectorAll(".category-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const category = btn.dataset.category;
+      activeCategory = activeCategory === category ? null : category; // click the active one again to clear
+      document.querySelectorAll(".category-btn").forEach((b) => b.classList.toggle("active", b.dataset.category === activeCategory));
+      applyFilters();
+    });
   });
 
   async function selectClass(item) {
-    const res = await fetch(item.file);
+    const res = await fetch(item.file, { cache: "no-store" });
     const still = await res.json();
 
     current = {
