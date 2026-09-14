@@ -756,6 +756,13 @@
     "isLord": false
   },
   {
+    "id": 157,
+    "name": "Sword Knight (F)",
+    "file": "stills/157.json",
+    "category": "base",
+    "isLord": false
+  },
+  {
     "id": 21,
     "name": "Swordmaster",
     "file": "stills/21.json",
