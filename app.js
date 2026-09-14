@@ -69,15 +69,46 @@
     }
   }
 
-  basePaletteSelect.addEventListener("change", () => {
-    if (!current || basePaletteSelect.value === "") return;
-    const preset = basePalettes[Number(basePaletteSelect.value)];
+  function applyBasePalette(index) {
+    if (!current || !basePalettes.length) return;
+    const wrapped = ((index % basePalettes.length) + basePalettes.length) % basePalettes.length;
+    const preset = basePalettes[wrapped];
     current.palette = preset.colors.map(quantizeColor);
+    basePaletteSelect.value = String(wrapped); // keep in sync so arrow keys/buttons continue from here, not "Choose..."
     renderSwatches();
     updateActiveColorEditor();
     drawPreview();
     updateHexOutput();
-    basePaletteSelect.value = ""; // reset to "Choose..." -- this is a one-shot apply, not a persistent mode
+  }
+
+  basePaletteSelect.addEventListener("change", () => {
+    if (basePaletteSelect.value === "") return;
+    applyBasePalette(Number(basePaletteSelect.value));
+  });
+
+  // Native <select> already steps through options with Up/Down and applies
+  // instantly (no Enter needed) once it's focused-but-closed -- Left/Right
+  // aren't standard select keys though, so wire those up too for fast
+  // one-handed cycling either direction.
+  basePaletteSelect.addEventListener("keydown", (evt) => {
+    const current_ = basePaletteSelect.value === "" ? -1 : Number(basePaletteSelect.value);
+    if (evt.key === "ArrowRight") {
+      evt.preventDefault();
+      applyBasePalette(current_ + 1);
+    } else if (evt.key === "ArrowLeft") {
+      evt.preventDefault();
+      applyBasePalette(current_ - 1);
+    }
+  });
+
+  document.getElementById("base-palette-prev").addEventListener("click", () => {
+    const idx = basePaletteSelect.value === "" ? -1 : Number(basePaletteSelect.value);
+    applyBasePalette(idx - 1);
+  });
+
+  document.getElementById("base-palette-next").addEventListener("click", () => {
+    const idx = basePaletteSelect.value === "" ? -1 : Number(basePaletteSelect.value);
+    applyBasePalette(idx + 1);
   });
 
   function renderClassList(items) {

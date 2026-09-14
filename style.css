@@ -215,8 +215,9 @@ main {
 .base-palette-row {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   margin-bottom: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .base-palette-row label {
@@ -233,6 +234,18 @@ main {
   background: var(--panel-alt);
   color: var(--text);
   font-size: 0.85rem;
+}
+
+#base-palette-prev,
+#base-palette-next {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.base-palette-hint {
+  font-size: 0.7rem;
+  color: var(--text-dim);
 }
 
 .actions {
