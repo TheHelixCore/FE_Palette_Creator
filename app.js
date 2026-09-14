@@ -86,19 +86,24 @@
     applyBasePalette(Number(basePaletteSelect.value));
   });
 
-  // Native <select> already steps through options with Up/Down and applies
-  // instantly (no Enter needed) once it's focused-but-closed -- Left/Right
-  // aren't standard select keys though, so wire those up too for fast
-  // one-handed cycling either direction.
-  basePaletteSelect.addEventListener("keydown", (evt) => {
-    const current_ = basePaletteSelect.value === "" ? -1 : Number(basePaletteSelect.value);
-    if (evt.key === "ArrowRight") {
-      evt.preventDefault();
-      applyBasePalette(current_ + 1);
-    } else if (evt.key === "ArrowLeft") {
-      evt.preventDefault();
-      applyBasePalette(current_ - 1);
-    }
+  // Deliberately NOT a keydown listener on the <select> itself -- once its
+  // native option list is open, some browsers (Safari in particular) hand
+  // keyboard control to a real OS-level popup that never dispatches DOM
+  // key events back to the page at all, so a handler on the element can
+  // silently never fire. Listening on the whole document instead sidesteps
+  // that -- pressing Left/Right works no matter what has focus, as long as
+  // it isn't a text field/slider that legitimately wants arrow keys for
+  // itself (search box, hex inputs, R/G/B sliders, import box).
+  const ARROW_KEY_EXEMPT_TAGS = new Set(["INPUT", "TEXTAREA"]);
+  const ARROW_NEXT_KEYS = new Set(["ArrowRight", "ArrowUp"]);
+  const ARROW_PREV_KEYS = new Set(["ArrowLeft", "ArrowDown"]);
+  document.addEventListener("keydown", (evt) => {
+    if (!ARROW_NEXT_KEYS.has(evt.key) && !ARROW_PREV_KEYS.has(evt.key)) return;
+    if (ARROW_KEY_EXEMPT_TAGS.has(document.activeElement.tagName)) return;
+    if (!current || !basePalettes.length) return;
+    evt.preventDefault();
+    const idx = basePaletteSelect.value === "" ? -1 : Number(basePaletteSelect.value);
+    applyBasePalette(ARROW_NEXT_KEYS.has(evt.key) ? idx + 1 : idx - 1);
   });
 
   document.getElementById("base-palette-prev").addEventListener("click", () => {
