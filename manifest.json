@@ -182,6 +182,13 @@
     "isLord": false
   },
   {
+    "id": 160,
+    "name": "Brigand (F)",
+    "file": "stills/160.json",
+    "category": "base",
+    "isLord": false
+  },
+  {
     "id": 74,
     "name": "Cleric",
     "file": "stills/74.json",
@@ -665,6 +672,13 @@
     "isLord": false
   },
   {
+    "id": 159,
+    "name": "Rogue (F)",
+    "file": "stills/159.json",
+    "category": "promoted",
+    "isLord": false
+  },
+  {
     "id": 39,
     "name": "Sage",
     "file": "stills/39.json",
@@ -710,6 +724,13 @@
     "id": 78,
     "name": "Soldier",
     "file": "stills/78.json",
+    "category": "base",
+    "isLord": false
+  },
+  {
+    "id": 161,
+    "name": "Soldier (F)",
+    "file": "stills/161.json",
     "category": "base",
     "isLord": false
   },
@@ -787,6 +808,13 @@
     "id": 13,
     "name": "Thief",
     "file": "stills/13.json",
+    "category": "base",
+    "isLord": false
+  },
+  {
+    "id": 158,
+    "name": "Thief (F)",
+    "file": "stills/158.json",
     "category": "base",
     "isLord": false
   },
